@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { logIn } from "~/app/login/actions"
-import { signUpFormSchema as logInFormSchema } from "./type"
+import { logInFormSchema } from "./type"
 
 import { useState } from "react"
 import { Button } from "~/components/ui/button"
@@ -29,9 +29,10 @@ export default function LogInForm() {
   })
 
   const onSubmit = async (formData: z.infer<typeof logInFormSchema>) => {
+    console.log("calledn on submit")
     const res = await logIn(formData)
     if (res) {
-      setError(res.code)
+      setError(res)
     } else {
       setError(undefined)
     }
