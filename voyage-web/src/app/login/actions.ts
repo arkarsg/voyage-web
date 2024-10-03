@@ -17,7 +17,7 @@ export async function logIn(formData: z.infer<typeof signUpFormSchema>) {
   const { error } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
-    redirect("/error")
+    return error
   }
 
   revalidatePath("/", "layout")
