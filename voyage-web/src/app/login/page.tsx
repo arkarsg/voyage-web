@@ -17,6 +17,7 @@ import SignUpForm from "./signUpForm"
 
 export default function AuthTabPage() {
   return (
+    <div className="flex flex-col items-center justify-center min-h-screen p-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
     <Tabs defaultValue="log-in" className="w-[400px]">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="log-in">Log In</TabsTrigger>
@@ -49,5 +50,6 @@ export default function AuthTabPage() {
         </Card>
       </TabsContent>
     </Tabs>
+    </div>
   )
 }

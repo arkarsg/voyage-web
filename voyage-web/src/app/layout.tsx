@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import 'react-toastify/dist/ReactToastify.css';
 import "./globals.css";
 
 
