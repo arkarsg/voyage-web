@@ -17,9 +17,10 @@ import {
   FormMessage
 } from "~/components/ui/form"
 import { Input } from "~/components/ui/input"
+import ErrorAlert from "../ui/alert"
 
 export default function LogInForm() {
-  const [error, setError] = useState<string | undefined>()
+  const [error, setError] = useState<string | undefined>(undefined)
   const form = useForm<z.infer<typeof logInFormSchema>>({
     resolver: zodResolver(logInFormSchema),
     defaultValues: {
@@ -76,7 +77,7 @@ export default function LogInForm() {
           <Button type="submit">Log In</Button>
         </form>
       </Form>
-      {error ?? <p>{error}</p>}
+      {error ? <ErrorAlert>{error}</ErrorAlert> : null}
     </>
   )
 }
