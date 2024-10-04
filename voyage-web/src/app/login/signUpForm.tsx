@@ -17,6 +17,7 @@ import {
   FormMessage
 } from "~/components/ui/form"
 import { Input } from "~/components/ui/input"
+import ErrorAlert from "../ui/alert"
 
 export default function SignUpForm() {
   const [error, setError] = useState<string | undefined>()
@@ -92,7 +93,7 @@ export default function SignUpForm() {
           <Button type="submit">Create</Button>
         </form>
       </Form>
-      {error ?? <p>{error}</p>}
+      {error ? <ErrorAlert>{error}</ErrorAlert> : null}
     </>
   )
 }
