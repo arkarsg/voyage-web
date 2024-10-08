@@ -108,6 +108,11 @@ export default function AccountForm({ user }: { user: User | null }) {
         }
       </CardContent>
     </Card>
+    <form action="/auth/signout" method="post">
+      <Button type="submit">
+        Sign out
+      </Button>
+    </form>
     </>
   )
 }
