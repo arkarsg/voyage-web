@@ -8,5 +8,11 @@ export default async function Account() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  return <AccountForm user={user} />
+  return (
+  <div className="flex flex-col items-center justify-center min-h-screen p-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className='w-full'>
+      <AccountForm user={user} />
+    </div>
+  </div>
+  )
 }

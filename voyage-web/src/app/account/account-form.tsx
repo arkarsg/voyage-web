@@ -1,7 +1,11 @@
 'use client'
 import { type User } from '@supabase/supabase-js'
 import { useCallback, useEffect, useState } from 'react'
+import { Button } from '~/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { createClient } from '~/utils/supabase/client'
+import ReadOnlyAccountCard from './card/read-only-account-card'
+import EditAccountForm from './forms/edit-account-form'
 
 // ...
 
@@ -11,7 +15,8 @@ export default function AccountForm({ user }: { user: User | null }) {
   const [fullname, setFullname] = useState<string | null>(null)
   const [username, setUsername] = useState<string | null>(null)
   const [website, setWebsite] = useState<string | null>(null)
-  const [avatar_url, setAvatarUrl] = useState<string | null>(null)
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+
 
   const getProfile = useCallback(async () => {
     try {
@@ -32,7 +37,6 @@ export default function AccountForm({ user }: { user: User | null }) {
         setFullname(data.full_name)
         setUsername(data.username)
         setWebsite(data.website)
-        setAvatarUrl(data.avatar_url)
       }
     } catch (error) {
       alert('Error loading user data!' + JSON.stringify(error))
@@ -46,14 +50,13 @@ export default function AccountForm({ user }: { user: User | null }) {
   }, [user, getProfile])
 
   async function updateProfile({
+    fullname,
     username,
     website,
-    avatar_url,
   }: {
     username: string | null
     fullname: string | null
     website: string | null
-    avatar_url: string | null
   }) {
     try {
       setLoading(true)
@@ -63,72 +66,49 @@ export default function AccountForm({ user }: { user: User | null }) {
         full_name: fullname,
         username,
         website,
-        avatar_url,
         updated_at: new Date().toISOString(),
       })
       if (error) throw error
       alert('Profile updated!')
+      return false
     } catch (error) {
       alert('Error updating the data!')
+      return true
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="form-widget">
-
-      {/* ... */}
-
-      <div>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="text" value={user?.email} disabled />
-      </div>
-      <div>
-        <label htmlFor="fullName">Full Name</label>
-        <input
-          id="fullName"
-          type="text"
-          value={fullname || ''}
-          onChange={(e) => setFullname(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          value={username || ''}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="website">Website</label>
-        <input
-          id="website"
-          type="url"
-          value={website || ''}
-          onChange={(e) => setWebsite(e.target.value)}
-        />
-      </div>
-
-      <div>
-        <button
-          className="button primary block"
-          onClick={() => updateProfile({ fullname, username, website, avatar_url })}
-          disabled={loading}
-        >
-          {loading ? 'Loading ...' : 'Update'}
-        </button>
-      </div>
-
-      <div>
-        <form action="/auth/signout" method="post">
-          <button className="button block" type="submit">
-            Sign out
-          </button>
-        </form>
-      </div>
-    </div>
+    <>
+      {isEdit ? (
+          <Button onClick={() => setIsEdit(false)} size="sm" variant="outline">Cancel</Button>
+          ) : (
+          <Button onClick={() => setIsEdit(true)} size="sm" variant="outline">Edit</Button>
+          )
+    }
+    <Card className='w-fit'>
+      <CardHeader>
+        <CardTitle>{isEdit ? "Edit profile"  : "Your profile"}</CardTitle>
+        <CardDescription>
+          {isEdit ? "Enter changes to profile details" : null }
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        {isEdit ? (
+            <EditAccountForm 
+              initialFullName={fullname}
+              initialUsername={username}
+              initialWebsite={website}
+              handleUpdate={updateProfile}
+            />
+          ) : (
+            <ReadOnlyAccountCard email={user?.email} full_name={fullname} username={username} website={website}/>
+          )
+        }
+      </CardContent>
+    </Card>
+    </>
   )
 }
+
