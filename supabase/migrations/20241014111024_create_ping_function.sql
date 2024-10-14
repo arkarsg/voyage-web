@@ -1,0 +1,5 @@
+CREATE FUNCTION ping() RETURNS integer AS $$
+BEGIN
+    RETURN 1;
+END;
+$$ LANGUAGE plpgsql;
