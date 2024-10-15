@@ -1,9 +1,11 @@
+import { Voyages, voyagesQuery } from '@/supabase/database.queries';
 import { createContext, useContext } from 'react';
 import { toast } from 'react-toastify';
 import { supabase } from '../supabase/supabaseClient';
 
 interface IApiContext {
   ping: () => Promise<void>;
+  getVoyages: () => Promise<Voyages | null | undefined>;
 }
 
 const ApiContext = createContext<IApiContext | null>(null);
@@ -24,8 +26,23 @@ const ApiProvider = (props: React.PropsWithChildren) => {
     }
   }
 
+  const getVoyages = async (): Promise<Voyages | null | undefined> => {
+    try {
+      const { data, error, status } = await voyagesQuery
+
+      if (error && status !== 406) {
+          console.log(error)
+          throw error
+      }
+
+      return data;
+    } catch (error) {
+      const { message } = error as Error;
+      toast.error("Something went wrong: " + message)
+    }
+  }
   return (
-    <ApiContext.Provider value={{ping}}>
+    <ApiContext.Provider value={{ping, getVoyages}}>
       {props.children}
     </ApiContext.Provider>
   )
