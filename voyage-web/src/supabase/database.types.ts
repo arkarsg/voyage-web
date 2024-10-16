@@ -125,6 +125,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_voyage: {
+        Args: {
+          p_voyage_name: string
+          p_voyage_destination: string
+          p_owner_id: string
+        }
+        Returns: undefined
+      }
       ping: {
         Args: Record<PropertyKey, never>
         Returns: number

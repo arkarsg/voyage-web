@@ -1,4 +1,5 @@
 import { Voyages, voyagesQuery } from '@/supabase/database.queries';
+import { CreateVoyageRequest } from '@/types/api';
 import { createContext, useContext } from 'react';
 import { toast } from 'react-toastify';
 import { supabase } from '../supabase/supabaseClient';
@@ -6,6 +7,7 @@ import { supabase } from '../supabase/supabaseClient';
 interface IApiContext {
   ping: () => Promise<void>;
   getVoyages: () => Promise<Voyages | null | undefined>;
+  createVoyage: (req: CreateVoyageRequest) => Promise<void>;
 }
 
 const ApiContext = createContext<IApiContext | null>(null);
@@ -41,8 +43,29 @@ const ApiProvider = (props: React.PropsWithChildren) => {
       toast.error("Something went wrong: " + message)
     }
   }
+
+  const createVoyage = async (req: CreateVoyageRequest) => {
+    const {voyageName, voyageDestination, ownerId} = req;
+    try {
+      const { error, status } = await supabase.rpc("create_voyage", {
+        p_voyage_name: voyageName,
+        p_voyage_destination: voyageDestination,
+        p_owner_id: ownerId
+      });
+
+      if (error && status !== 406) {
+          console.log(error)
+          throw error
+      }
+      toast.success("Voyage created successfully!")
+    } catch (error) {
+      const { message } = error as Error
+      toast.error("Could not create voyage: " + message)
+    }
+  }
+
   return (
-    <ApiContext.Provider value={{ping, getVoyages}}>
+    <ApiContext.Provider value={{ping, getVoyages, createVoyage}}>
       {props.children}
     </ApiContext.Provider>
   )
